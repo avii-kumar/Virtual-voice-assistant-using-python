@@ -1,0 +1,234 @@
+import os
+import webbrowser
+
+import speech_recognition as sr
+import pyttsx3
+import pywhatkit
+import datetime
+import wikipedia
+import pyjokes
+import subprocess
+from bs4 import BeautifulSoup
+import requests
+
+
+
+listener = sr.Recognizer()
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id)
+
+
+def talk(text):
+    engine.say(text)
+
+    engine.runAndWait()
+
+
+def take_command():
+    global source
+    try:
+
+        print('listening...')
+        voice = listener.listen(source)
+        print('recognizing....')
+        command = listener.recognize_google(voice)
+        command = command.lower()
+        if 'alexa' in command:
+            command = command.replace('friday', '')
+
+            print(command)
+
+        return command
+
+
+    except:
+        print("Sorry! I did not understand that. Please try again.")
+        talk("Sorry! I did not understand that. Please try again.")
+        run_friday()
+
+
+print("Hello sir,welcome back. My name is friday and i am yor personal voice assistance")
+talk("Hello sir,welcome back. My name is friday and i am yor personal voice assistance")
+print('its so nice to assist you again.')
+talk('its so nice to assist you again.')
+
+t = "temperature in chandigarh"
+url = f"https://www.google.com/search?q={t}"
+r = requests.get(url)
+data = BeautifulSoup(r.text,"html.parser")
+temp = data.find("div",class_="BNeawe").text
+
+print(f"current {t} is {temp} ")
+talk(f"current {t} is {temp} ")
+
+
+print('How may i help you sir?')
+talk('How may i help you sir?')
+def run_friday():
+    #status = 1
+    command = take_command()
+    print(command)
+    if 'hello' in command:
+        talk("hello sir.")
+    elif 'how are you' in command:
+        talk('I am doing really well, thank you, what about you ?')
+    elif 'also good' in command:
+        talk('thats great')
+    elif 'what can you do' in command:
+        talk("I can do pretty things, what do you want to know" )
+
+    elif 'you are awesome' in command:
+        talk('I know, tell me another thing!')
+
+    elif 'who are you' in command:
+        talk('i am your personal assistance, friday. sir!')
+
+
+
+    elif 'play' in command:
+        song = command.replace('play', '')
+        talk('playing ' + song)
+        pywhatkit.playonyt(song)
+    elif 'time' in command:
+        time = datetime.datetime.now().strftime('%I:%M %p')
+        print(time)
+        talk('current time is  ' + time)
+    elif 'who is ' in command:
+        person = command.replace('who is ', '')
+        info = wikipedia.summary(person, 1)
+        talk('This is what i found for you...sir!')
+        print(info)
+        talk(info)
+    elif 'temperature' in command:
+        search = command.replace("what is",' ')
+        url = f"https://www.google.com/search?q={search}"
+        r = requests.get(url)
+        data = BeautifulSoup(r.text,"html.parser")
+        temp = data.find("div",class_="BNeawe").text
+        talk(f"{search} is {temp} ")
+        print(f"{search} is {temp} ")
+
+
+    elif 'open google' in command:
+        talk('opening google sir')
+        webbrowser.open("google.com")
+
+    elif 'open youtube' in command:
+        talk('opening youtube sir')
+        webbrowser.open("youtube.com")
+
+    # elif command:
+    #     v = command
+    #     talk(command+'what?')
+    #     print(command + 'what?')
+
+
+
+
+
+    elif 'joke' in command:
+        joke = pyjokes.get_joke()
+        print(joke)
+        talk(joke)
+
+
+    elif 'date' in command:
+        date = datetime.datetime.today()
+        print(date.date())
+        talk(date.date())
+
+    elif 'open' in command:  
+
+
+        if 'calculator' in command:
+            talk('opening calculator.')
+            calculator = subprocess.call('calc.exe')
+
+        elif 'notepad' in command:
+            talk('opening notepad.')
+            notepad = subprocess.call('notepad.exe')
+        elif 'mail' in command:
+            talk('opening outlook mail')
+            cmd = subprocess.call('C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.exe')
+        elif 'word' in command:
+            talk('opening microsoft word')
+            word = subprocess.Popen('C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.exe')
+        elif 'spotify' in command:
+            talk('opening spotify')
+            spotify = subprocess.Popen('spotify.exe')
+        elif 'whatsapp' in command:
+            talk('opening whatsapp')
+            whatsapp = subprocess.Popen('C:\\Users\\naray\\AppData\\Local\\WhatsApp\\WhatsApp.exe')
+        elif 'code' in command:
+            talk('opening visual studio code')
+            code = subprocess.Popen('C:\\Users\\naray\\AppData\Local\\Programs\\Microsoft VS Code\\Code.exe')
+        elif 'discord' in command:
+            talk('opening discord')
+            discord = subprocess.Popen('C:\\Users\\naray\\AppData\\Local\\Discord\\app-0.0.308\\Discord.exe')
+
+        elif'chrome' in command:
+            talk('opening chrome browser')
+            chrome = subprocess.Popen('C:\\Program Files\\Google\\Chrome\\Application\\Chrome.exe')
+
+
+
+        else:
+            talk('please repeat it again')
+
+
+    elif 'close' in command:
+
+        if 'calculator' in command:
+            talk('closing calculator')
+            os.system("taskkill /f /im Calculator.exe")
+        elif 'notepad' in command:
+            talk('closing notepad.')
+            os.system("taskkill /f /im notepad.exe")
+
+        elif 'word' in command:
+            talk('closing microsoft word')
+            os.system("taskkill /f /im WINWORD.exe")
+        elif 'spotify' in command:
+            talk('closing spotify')
+            os.system("taskkill /f /im spotify.exe")
+        elif 'whatsapp' in command:
+            talk('closing whatsapp')
+            os.system("taskkill /f /im WhatsApp.exe")
+        elif 'code' in command:
+            talk('closing visual studio code')
+            os.system("taskkill /f /im Code.exe")
+        elif 'discord' in command:
+            talk('closing discord')
+            os.system("taskkill /f /im Discord.exe")
+
+        elif 'chrome' in command:
+            talk("closing chrome browser")
+            os.system("taskkill /f /im Chrome.exe")
+
+        elif 'mail' in command:
+            talk("closing outlook mail")
+            os.system("taskkill /f /im HxOutlook.exe")
+
+
+        else:
+            talk('what do you want me to close')
+
+    elif 'stop' in command:
+        global status
+        status = 0
+        print("Ok, bye. See you soon")
+        talk("Ok, bye. See you soon")
+
+
+    else:
+        talk('Sorry! I did not recognise that. Please say the command again.')
+
+
+with sr.Microphone() as source:
+    status = 1
+    while status>0:
+        if status == 1:
+            run_friday()
+        else:
+            break
